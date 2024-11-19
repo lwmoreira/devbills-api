@@ -1,0 +1,11 @@
+import { Router } from 'express';
+
+import { CategoriesController } from '../controllers/categories.controller';
+
+export const categoriesRoutes = Router();
+
+const controller = new CategoriesController();
+
+categoriesRoutes.post('/', (_, res) => {
+  controller.create(_, res);
+});
