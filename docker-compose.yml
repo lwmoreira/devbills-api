@@ -1,33 +1,33 @@
 version: '3'
 
 services:
-  mongo:
-    container_name: mongodb
-    restart: always
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: 'devbills'
-      MONGO_INITDB_ROOT_PASSWORD: 'pass123'
-
+  api:
+    build: .
+    container_name: mongodb-devbills-api
     ports:
-      - '27017:27017'
-    networks:
-      - local
-
-  app:
+      - '3333:3333' # Expondo a porta 3333 da API
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/devbills # Conectando ao MongoDB
     depends_on:
       - mongo
-    container_name: devbills-api
-    build:
-      context: .
-      dockerfile: Dockerfile
     volumes:
-      - ./:/home/app
-    ports:
-      - '3333:3333'
+      - .:/app
     networks:
-      - local
+      - devbills-network
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - '27017:27017' # Expondo a porta do MongoDB
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - devbills-network
 
 networks:
-  local:
-    name: local
+  devbills-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
